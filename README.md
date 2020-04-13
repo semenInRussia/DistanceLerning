@@ -6,6 +6,8 @@
 Вот наш стек:
 * Django 3.0 для web
 * Django rest_framework для API
+
+
 Настройка базы данных:
 
 Windows
@@ -20,6 +22,7 @@ python3 manage.py migrate
 ```
 
 Создание сервера
+
 Windows
 ```
 python manage.py runserver
