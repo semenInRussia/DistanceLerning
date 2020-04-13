@@ -1,24 +1,23 @@
 from django.contrib.auth import get_user
 from django.http import HttpRequest
-from django.shortcuts import render, get_object_or_404
-
+from django.shortcuts import get_object_or_404
+from main.models import School
 # Create your views here.
 from rest_framework import status
 from rest_framework.response import Response
-from rest_framework.serializers import ModelSerializer
 from rest_framework.views import APIView
 
 from .models import ClassModel
 from .serializers import ClassListSerializer
-from main.models import School
 
 
 class ClassApi(APIView):
-    def get_school(self, pk: int) -> School:
+    @staticmethod
+    def get_school(pk: int) -> School:
         return get_object_or_404(School, pk=pk)
 
     def get(self, request: HttpRequest, pk: int) -> Response:
-        qs = ClassModel.objects.all().filter(school=self.get_school(pk))
+        qs = ClassModel.objects.all().filter(school=self.get_school(pk=pk))
         serializer = ClassListSerializer(qs, many=True)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -39,7 +38,8 @@ class ClassApiDetail(APIView):
     def get_school(self, pk: int) -> School:
         return get_object_or_404(School, pk=pk)
 
-    def get_class(self, pk_class: int, school: School) -> ClassModel:
+    @staticmethod
+    def get_class(pk_class: int, school: School) -> ClassModel:
         return get_object_or_404(ClassModel, pk=pk_class, school=school)
 
     def get(self, request: HttpRequest, pk: int, pk_class: int) -> Response:
