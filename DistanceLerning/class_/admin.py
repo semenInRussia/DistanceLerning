@@ -1,6 +1,6 @@
 from django.contrib import admin
-from .models import School
 
 # Register your models here.
+from .models import ClassModel
 
-admin.site.register(School)
+admin.site.register(ClassModel)

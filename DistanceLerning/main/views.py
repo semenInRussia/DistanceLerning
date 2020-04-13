@@ -1,3 +1,4 @@
+from django.shortcuts import get_object_or_404
 from rest_framework import generics
 from rest_framework.permissions import *
 from rest_framework.response import Response
@@ -14,19 +15,26 @@ from .serializers import SchoolListSerializer, SchoolCreateSerializer
 class SchoolApi(APIView):
     def get(self, request) -> Response:
         qs = School.objects.all()
-        serializer = SchoolCreateSerializer(qs, many=True)
+        serializer = SchoolListSerializer(qs, many=True)
         return Response(serializer.data)
 
     def post(self, request) -> Response:
-        request.data['owner'] = get_user(request)
-        serializer = SchoolCreateSerializer(request.data)
-        serializer.save()
-        return Response(serializer)
+        # todo get invites to join to School
+        request.data['owner'] = request.user.id
+
+        serializer = SchoolCreateSerializer(data=request.data)
+
+        print(request.data)
+        if serializer.is_valid():
+            print(serializer.validated_data)
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
 class SchoolDetailApi(APIView):
     def get_object(self, pk):
-        school = School.objects.get(pk=pk)
+        school = get_object_or_404(School, pk=pk)
         return school
 
     def get(self, request, pk):
