@@ -15,7 +15,7 @@ pip install -r requirements.txt
 python manage.py makemigratoins
 python manage.py migrate
 ```
-Linux
+Linux and Mac
 ```
 pip3 install -r requirements.txt
 python3 manage.py makemigratoins
