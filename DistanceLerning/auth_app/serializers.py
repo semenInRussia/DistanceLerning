@@ -5,7 +5,7 @@ from rest_framework import serializers
 # Creating your serializers here.
 from .models import Student, Directer, Teacher, Subject, Diary
 
-# Get user model...
+# Get user model
 User = get_user_model()
 
 

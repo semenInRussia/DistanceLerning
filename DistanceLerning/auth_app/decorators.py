@@ -1,18 +1,10 @@
-from functools import wraps
-from typing import NamedTuple
+from rest_framework.response import Response
 
 
-class Register(NamedTuple):
-    dictionary: dict
-
-    def register(self, name, val=None):
-        @wraps
-        def decorator(f):
-            def func(*args, **kwargs):
-                self.dictionary[name] = val
-                res = f(*args, **kwargs)
-                return res
-
-            return func
-
-        return decorator
+def check_permissions(permissions: list):
+    def decorator(f):
+        def func(request, *args, **kwargs):
+            if False in permissions:
+                return lambda request_, *args_, **kwargs_: Response(status=550)
+            else:
+                return f(request, *args, **kwargs)
