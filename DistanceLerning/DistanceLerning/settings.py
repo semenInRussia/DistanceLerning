@@ -16,8 +16,8 @@ ALLOWED_HOSTS = []
 
 # Application definition
 
-# DATA
-VERSION = 'v0.1'
+# envirement
+VERSION = 'v0.1'  # VERSION API
 
 INSTALLED_APPS = [
     'django.contrib.auth',

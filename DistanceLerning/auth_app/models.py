@@ -52,7 +52,7 @@ class Student(models.Model, Customer):
     user = user_field
 
     def __str__(self):
-        return f"{self.role} {self.subject} {self.user}"
+        return f"{self.role} {self.user}"
 
     def isDirecter(self, school: School):
         return False
@@ -89,6 +89,10 @@ class Assessment(models.Model):
     def __str__(self):
         return f"{self.value} {self.diary}"
 
+    @classmethod
+    def create(cls, value: int, diary):
+        return cls(value=value, diary=diary).save()
+
 
 class Diary(models.Model):
     student = models.ForeignKey(Student, on_delete=models.CASCADE, verbose_name="Школьник")
@@ -98,4 +102,11 @@ class Diary(models.Model):
         verbose_name_plural = "Дневники"
 
     def __str__(self):
-        return f"Дневник{self.student}"
+        return f"Дневник {self.student}"
+
+    @classmethod
+    def create(cls, student: models.Model):
+        diary = cls()
+        diary.student = student
+        diary.save()
+        return diary

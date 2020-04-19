@@ -3,14 +3,18 @@ from django.db import IntegrityError
 from rest_framework import serializers
 
 # Creating your serializers here.
-from .models import Student, Directer, Teacher, Subject
+from .models import Student, Directer, Teacher, Subject, Diary
 
+# Get user model...
 User = get_user_model()
+
+
+# Create your serializers...
 
 
 class RegistrationSerializer(serializers.ModelSerializer):
     role = serializers.CharField(max_length=10)
-    subject = serializers.IntegerField(allow_null=True)
+    subject = serializers.IntegerField(default=1)
 
     class Meta:
         model = User
@@ -19,6 +23,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         # todo check email
         try:
+            # Create user
             user = User.objects.create_user(
                 validated_data['username'],
                 validated_data['email'],
@@ -26,11 +31,14 @@ class RegistrationSerializer(serializers.ModelSerializer):
             )
 
         except IntegrityError:
+            # If user is be
+            # Get user...
             user = authenticate(
                 username=validated_data['username'],
                 password=validated_data['password']
             )
 
+        # All types customers...
         role = validated_data['role']
         models_role = {
             'student': Student,
@@ -38,16 +46,20 @@ class RegistrationSerializer(serializers.ModelSerializer):
             'teacher': Teacher
         }
 
+        # Choose customer type...
         customer_model = None
         if role in models_role:
             customer_model = models_role[role]
 
         customer = customer_model(user=user)
+
         if role == 'teacher' or role == 'directer':
             customer.subject = Subject.objects.get(id=validated_data.get('subject'))
-        # todo code create student...
+            customer.save()
+        elif role == 'student':
+            customer.save()
+            Diary.create(student=customer)
 
-        customer.save()
         return user
 
 

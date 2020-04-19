@@ -54,8 +54,7 @@ class UserDetailApi(APIView):
             serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-    # todo Correct delete...
-    # def delete(self, request: HttpRequest, pk: int) -> Response:
-    #     user = self.get_object(pk)
-    #     user.delete()
-    #     return Response(status=status.HTTP_204_NO_CONTENT)
+    def delete(self, request: HttpRequest, pk: int) -> Response:
+        user = self.get_object(pk)
+        user.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
