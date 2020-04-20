@@ -1,5 +1,4 @@
 from auth_app.models import Directer
-from django.http import HttpRequest
 from rest_framework.permissions import BasePermission
 
 

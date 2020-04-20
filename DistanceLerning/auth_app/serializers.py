@@ -11,6 +11,11 @@ User = get_user_model()
 
 # Create your serializers...
 
+# class LoginSerializer(serializers.Serializer):
+#     username = serializers.CharField(max_length=255)
+#     password = serializers.CharField(max_length=255)
+#
+
 
 class RegistrationSerializer(serializers.ModelSerializer):
     role = serializers.CharField(max_length=10)
@@ -29,7 +34,6 @@ class RegistrationSerializer(serializers.ModelSerializer):
                 validated_data['email'],
                 validated_data['password']
             )
-
         except IntegrityError:
             # If user is be
             # Get user...
@@ -38,8 +42,9 @@ class RegistrationSerializer(serializers.ModelSerializer):
                 password=validated_data['password']
             )
 
-        # All types customers...
         role = validated_data['role']
+
+        # All types customers...
         models_role = {
             'student': Student,
             'directer': Directer,

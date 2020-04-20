@@ -1,7 +1,6 @@
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model, authenticate, login
 from django.http import HttpRequest
 from django.shortcuts import get_object_or_404
-
 
 # Create your views here.
 from rest_framework import status
@@ -12,6 +11,7 @@ from .models import Teacher, Student, Directer
 from .serializers import RegistrationSerializer, UserAllSerializer, UserUpdateSerializer
 
 User = get_user_model()
+
 
 class AuthenticationApi(APIView):
     def post(self, request: HttpRequest) -> Response:
@@ -47,3 +47,26 @@ class UserDetailApi(APIView):
         user = self.get_object(pk)
         user.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class LoginView(APIView):
+    def get_object(self, username, password):
+        return authenticate(username=username,
+                            password=password)
+
+    def post(self, request):
+        # fields
+        username: str = request.data.get('username')
+        password: str = request.data.get('password')
+
+        # Get user
+        user: User = self.get_object(username=username,
+                                     password=password)
+
+        # If user isn't anonymous
+        if user is not None:
+            login(request=request, user=user)
+        else:
+            return Response(status=status.HTTP_403_FORBIDDEN)
+
+        return Response(status=status.HTTP_201_CREATED)
