@@ -17,8 +17,11 @@ class AuthenticationApi(APIView):
     def post(self, request: HttpRequest) -> Response:
         serializer = RegistrationSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            try:
+                serializer.save()
+                return Response(data=serializer.data, status=status.HTTP_201_CREATED)
+            except AttributeError:
+                return Response(status=status.HTTP_201_CREATED)
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
     def get(self, request: HttpRequest) -> Response:
@@ -69,4 +72,4 @@ class LoginView(APIView):
         else:
             return Response(status=status.HTTP_403_FORBIDDEN)
 
-        return Response(status=status.HTTP_201_CREATED)
+        return Response(status=status.HTTP_200_OK)
