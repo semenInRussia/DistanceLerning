@@ -34,7 +34,15 @@ Linux and Mac
 python3 manage.py makemigratoins
 python3 manage.py migrate
 ```
-
+# Установка зависемостей
+Windows
+```
+pip install -r requirements.txt
+```
+Linux/ Mac
+```
+pip3 install -r requirements.txt
+```
 # Создание сервера
 
 Windows
