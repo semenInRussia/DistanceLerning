@@ -39,7 +39,7 @@ class SchoolApi(APIView):
 # School Receiver
 class SchoolDetailApi(APIView):
     # Permissions
-    permission_classes = (IsOwnerSchool,)
+    permission_classes = (IsOwnerSchool, IsAdminUser)
 
     def get_object(self, pk):
         school = get_object_or_404(School, pk=pk)
