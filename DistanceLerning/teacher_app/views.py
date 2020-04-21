@@ -20,18 +20,10 @@ class SubjectApi(GenericAPIView, CreateModelMixin, ListModelMixin):
     def post(self, request, *args, **kwargs):
         return self.create(request, *args, **kwargs)
 
-class SubjectDetail(RetrieveModelMixin,
-                    UpdateModelMixin,
-                    DestroyModelMixin,
-                    GenericAPIView):
+
+class SubjectDetail(RetrieveModelMixin, UpdateModelMixin, DestroyModelMixin, GenericAPIView):
     queryset = Subject.objects.all()
     serializer_class = SubjectSerializer
 
     def get(self, request, *args, **kwargs):
         return self.retrieve(request, *args, **kwargs)
-
-    def put(self, request, *args, **kwargs):
-        return self.update(request, *args, **kwargs)
-
-    def delete(self, request, *args, **kwargs):
-        return self.destroy(request, *args, **kwargs)

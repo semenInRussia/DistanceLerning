@@ -1,4 +1,4 @@
-from django.contrib.auth import get_user_model, authenticate, login
+from django.contrib.auth import get_user_model, authenticate, login, logout
 from django.http import HttpRequest
 from django.shortcuts import get_object_or_404
 
@@ -16,12 +16,13 @@ User = get_user_model()
 class AuthenticationApi(APIView):
     def post(self, request: HttpRequest) -> Response:
         serializer = RegistrationSerializer(data=request.data)
+
         if serializer.is_valid():
             try:
                 serializer.save()
                 return Response(data=serializer.data, status=status.HTTP_201_CREATED)
             except AttributeError:
-                return Response(status=status.HTTP_201_CREATED)
+                return Response( status=status.HTTP_201_CREATED)
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
     def get(self, request: HttpRequest) -> Response:
@@ -53,6 +54,7 @@ class UserDetailApi(APIView):
 
 
 class LoginView(APIView):
+
     def get_object(self, username, password):
         return authenticate(username=username,
                             password=password)
@@ -73,3 +75,11 @@ class LoginView(APIView):
             return Response(status=status.HTTP_403_FORBIDDEN)
 
         return Response(status=status.HTTP_200_OK)
+
+class LogoutView(APIView):
+
+    def post(self, request: HttpRequest) -> Response:
+        if request.user.is_authenticated:
+            logout(request=request)
+            return Response(status=status.HTTP_200_OK)
+        return Response(status=status.HTTP_403_FORBIDDEN)
