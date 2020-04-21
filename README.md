@@ -1,49 +1,27 @@
 # DistanceLerning (Дист. обучение)
 Этот проект сделан для школ, для их учеников и их учителей.
-
 ## Вот пример испоьзования.
 Директор создает школу. Сообщает учителям. Учителя ренистрируются создают классы приглашают учеников и спокойно могут сообщать им ДЗ.
 
-# Наш стек:
+## Вот наш стек:
 * Django 3.0 для web
 * Django rest_framework для API
 
-# Для начала работы:
-Windows
-```
-pip install -r requirements.txt
-python manage.py makemigratoins
-python manage.py migrate
-```
-Linux and Mac
-```
-pip3 install -r requirements.txt
-python3 manage.py makemigratoins
-python3 manage.py migrate
-```
 
-# Настройка базы данных:
+## Настройка базы данных:
 
 Windows
 ```
-python manage.py makemigratoins
-python manage.py migrate
+python manage.py makemigrations
+python manage.py migrate~~~~
 ```
 Linux and Mac
 ```
-python3 manage.py makemigratoins
+python3 manage.py makemigrations
 python3 manage.py migrate
 ```
-# Установка зависемостей
-Windows
-```
-pip install -r requirements.txt
-```
-Linux/ Mac
-```
-pip3 install -r requirements.txt
-```
-# Создание сервера
+
+## Создание сервера
 
 Windows
 ```
