@@ -2,6 +2,7 @@
 
 from django.contrib.auth import get_user_model
 from django.db import models
+from django.urls import reverse
 
 from main.models import School
 
@@ -17,6 +18,12 @@ class ClassModel(models.Model):
     class Meta:
         verbose_name = "Класс"
         verbose_name_plural = "Классы"
+
+    def get_absolute_url(self):
+        return reverse("class_detail", kwargs={
+            "pk": self.school.pk,
+            "pk_class": self.pk,
+        })
 
     def __str__(self):
         return f"{self.number_class}{self.char_class}  {self.school}"

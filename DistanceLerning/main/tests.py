@@ -105,8 +105,18 @@ class SchoolTestCase(TestCase):
 
         school = School.objects.create(owner=user,
                                        number=500)
+
+        # Delete school
+        resp = self.client.delete(school.get_absolute_url())
+
+        self.assertEqual(resp.status_code, 204,
+                         "Status is not available. Status should is 204."
+                         )
         self.client.post(f"/api/{VERSION}/auth/logout/")
 
+        # Create new school
+        school = School.objects.create(owner=user,
+                                       number=500)
         # create new user
         self.client.post(f"/api/{VERSION}/auth/", data={
             "username": self.new_username,
@@ -124,8 +134,8 @@ class SchoolTestCase(TestCase):
 
         # get by school detail
 
-        resp = self.client.get(school.get_absolute_url())
+        resp = self.client.delete(school.get_absolute_url())
 
         self.assertEqual(resp.status_code, 403,
-                         "This status is available\n"+
-                         "Status should is 403")
+                         "This status is available. Status should is 403"
+                         )

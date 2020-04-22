@@ -14,7 +14,7 @@ from .serializers import SchoolListSerializer, SchoolCreateSerializer
 # School CRUD
 class SchoolApi(APIView):
     # permissions
-    permission_classes = (IsAdminUser | IsDirecter,)
+    permission_classes = [IsDirecter]
 
     # GET
     def get(self, request) -> Response:
@@ -39,10 +39,11 @@ class SchoolApi(APIView):
 # School Receiver
 class SchoolDetailApi(APIView):
     # Permissions
-    permission_classes = (IsOwnerSchool, IsAdminUser)
+    permission_classes = [IsOwnerSchool]
 
     def get_object(self, pk):
         school = get_object_or_404(School, pk=pk)
+        self.check_object_permissions(self.request, school)
         return school
 
     def get(self, request, pk) -> Response:

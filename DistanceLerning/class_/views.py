@@ -4,20 +4,23 @@ from django.shortcuts import get_object_or_404
 from main.models import School
 # Create your views here.
 from rest_framework import status
+from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework import generics
 
 from .models import ClassModel
+from .permissions import IsOwnerClass
 from .serializers import ClassListSerializer
 
 
 class ClassApi(APIView):
-    @staticmethod
-    def get_school(pk: int) -> School:
+    def get_school(self, pk: int) -> School:
         return get_object_or_404(School, pk=pk)
 
     def get(self, request: HttpRequest, pk: int) -> Response:
-        qs = ClassModel.objects.all().filter(school=self.get_school(pk=pk))
+        school = self.get_school(pk=pk)
+        qs = ClassModel.objects.all().filter(school=school)
         serializer = ClassListSerializer(qs, many=True)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -27,38 +30,33 @@ class ClassApi(APIView):
         request.data['school'] = self.get_school(pk).id
 
         serializer = ClassListSerializer(data=request.data)
-        print(request.data)
         if serializer.is_valid():
-            print(serializer.validated_data)
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
-class ClassApiDetail(APIView):
-    def get_school(self, pk: int) -> School:
+
+class ClassApiDetail(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = ClassListSerializer
+    permission_classes = [IsOwnerClass]
+    queryset = ClassModel.objects.all()
+
+    def get_school(self, pk: int):
         return get_object_or_404(School, pk=pk)
 
-    @staticmethod
-    def get_class(pk_class: int, school: School) -> ClassModel:
-        return get_object_or_404(ClassModel, pk=pk_class, school=school)
+    def get_object(self):
+        # Url kwargs
+        pk = self.kwargs["pk"]
+        pk_class = self.kwargs["pk_class"]
 
-    def get(self, request: HttpRequest, pk: int, pk_class: int) -> Response:
+        # Get school
         school = self.get_school(pk)
-        class_ = self.get_class(school=school, pk_class=pk_class)
-        serializer = ClassListSerializer(class_)
-        return Response(serializer.data, status=status.HTTP_200_OK)
 
-    def delete(self, request: HttpRequest, pk: int, pk_class: int) -> Response:
-        school = self.get_school(pk)
-        class_ = self.get_class(school=school, pk_class=pk_class)
-        class_.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        # get object
+        qs = self.get_queryset()
+        obj = get_object_or_404(qs, pk=pk_class, school=school)
 
-    def put(self, request: HttpRequest, pk: int, pk_class: int) -> Response:
-        school = self.get_school(pk)
-        class_ = self.get_class(school=school, pk_class=pk_class)
-        serializer = ClassListSerializer(instance=class_, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        return Response(status=status.HTTP_400_BAD_REQUEST)
+        # check permissions
+        self.check_object_permissions(self.request, obj)
+        return obj
+
