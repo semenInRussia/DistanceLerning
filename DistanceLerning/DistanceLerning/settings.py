@@ -30,6 +30,7 @@ INSTALLED_APPS = [
     'main',
     'class_',
     'auth_app',
+    'invites',
     'djoser',
     'teacher_app',
 ]
@@ -91,6 +92,12 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_RENDERER_CLASSES': [
+        'rest_framework.renderers.JSONRenderer',
+    ]
+}
 
 # AUTH_USER_MODEL = 'auth_app.User'
 

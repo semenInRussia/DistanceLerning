@@ -1,5 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.db import models
+from django.shortcuts import get_object_or_404
 from main.models import School
 
 # Create your models here.
@@ -77,6 +78,9 @@ class Directer(models.Model, Customer):
     def isDirecter(self, school: School):
         return school.owner.id == self.id
 
+    @property
+    def get_school_number(self):
+        return get_object_or_404(School, user=self.user)
 
 class Assessment(models.Model):
     value = models.IntegerField("Оценка")
