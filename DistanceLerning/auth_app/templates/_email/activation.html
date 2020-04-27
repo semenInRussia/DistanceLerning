@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <style>
+        * {
+            font-family: Arial, sans-serif, Helvetica;
+            color: #999999;
+        }
+        html {
+            background-color: #001;
+        }
+    </style>
+    <title></title>
+</head>
+<body>
+    <div align="center">
+        <h3> {{ Title }}</h3>
+        <h4>Здраствуйте, {{ user.username }}!</h4>
+        <h6>Говорят, что вы регистрировались на портале 'DistanceLerning' если это были вы то нажмите на кнопку внизу!</h6>
+        <table>
+            <a href="{{ activate_url }}" style="text-decoration: none; color: blue; margin-right: 10px;">Всё, четко!</a>
+            <a href="{{ negative_url }}" style="text-decoration: none; color: red; border: ">Это не я!</a>
+        </table>
+    </div>
+</body>
+</html>
