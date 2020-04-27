@@ -31,7 +31,8 @@ class Subject(models.Model):
 
 
 subject = models.ForeignKey(Subject, on_delete=models.CASCADE, verbose_name="Урок", default=0)
-user_field = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name="Пользователь", default=0)
+user_field = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name="Пользователь", default=0,
+                                  related_name='customer')
 
 
 class Teacher(models.Model, Customer):
