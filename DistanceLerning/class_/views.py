@@ -4,14 +4,15 @@ from django.shortcuts import get_object_or_404
 from main.models import School
 # Create your views here.
 from rest_framework import status
+from rest_framework.generics import ListCreateAPIView, ListAPIView
 from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import generics
 
-from .models import ClassModel
+from .models import ClassModel, MessageModel
 from .permissions import IsOwnerClass
-from .serializers import ClassListSerializer
+from .serializers import ClassListSerializer, MessageClassSerializer
 
 
 class ClassApi(APIView):
@@ -60,3 +61,19 @@ class ClassApiDetail(generics.RetrieveUpdateDestroyAPIView):
         self.check_object_permissions(self.request, obj)
         return obj
 
+
+class SendMessageToClass(ListCreateAPIView):
+    serializer_class = MessageClassSerializer
+    permission_classes = [IsAdminUser or IsOwnerClass]
+
+    def get_queryset(self):
+        return MessageModel.objects.all().filter(klass=self.get_object())
+
+    def get_object(self):
+        return get_object_or_404(ClassModel, school_id=self.kwargs['pk'],
+                                 pk=self.kwargs['pk_class'])
+
+    def post(self, request, *args, **kwargs):
+        request.data['owner'] = request.user.id
+        request.data['klass'] = self.get_object().id
+        return super().post(request, *args, **kwargs)

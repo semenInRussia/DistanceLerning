@@ -22,7 +22,6 @@ class ClassModelTestCase(TestCase):
     new_password: str = "12234234faijrifejrafsgtrFEWFWdsfDfeDEWfwFEWfajeirg32JJIJEI"
 
     def setUp(self) -> None:
-        self.client = Client()
         Subject.objects.create(name="History")
 
         test_user = User.objects.create_user(email="directer@user.com",
