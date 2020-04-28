@@ -67,7 +67,7 @@ class SendMessageToClass(ListCreateAPIView):
     permission_classes = [IsOwnerClass]
 
     def get_queryset(self):
-        return MessageModel.objects.all().filter(klass=self.get_object())
+        return MessageModel.objects.all().filter(klass=self.get_object_school())
 
     def get_object_school(self):
         obj = get_object_or_404(ClassModel, school_id=self.kwargs['pk'], pk=self.kwargs['pk_class'])
