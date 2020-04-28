@@ -37,12 +37,3 @@ class MessageModel(models.Model):
     klass = models.ForeignKey('ClassModel', on_delete=models.CASCADE, verbose_name='Класс')
     owner = models.ForeignKey('auth.User', on_delete=models.CASCADE, verbose_name='Отправитель')
     created = models.DateTimeField(auto_now_add=True, db_index=True, verbose_name='Время отправки')
-
-    @classmethod
-    def send(cls, owner: User, klass: ClassModel, text: str):
-        obj = cls(text=text,
-                  owner=owner,
-                  class_=klass,)
-
-        obj.save()
-        return obj

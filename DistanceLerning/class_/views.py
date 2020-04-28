@@ -64,16 +64,21 @@ class ClassApiDetail(generics.RetrieveUpdateDestroyAPIView):
 
 class SendMessageToClass(ListCreateAPIView):
     serializer_class = MessageClassSerializer
-    permission_classes = [IsAdminUser or IsOwnerClass]
+    permission_classes = [IsOwnerClass]
 
     def get_queryset(self):
         return MessageModel.objects.all().filter(klass=self.get_object())
 
     def get_object(self):
-        return get_object_or_404(ClassModel, school_id=self.kwargs['pk'],
-                                 pk=self.kwargs['pk_class'])
+        obj = get_object_or_404(ClassModel, school_id=self.kwargs['pk'], pk=self.kwargs['pk_class'])
+        self.check_object_permissions(obj=obj, request=self.request)
+        return obj
 
-    def post(self, request, *args, **kwargs):
+    def create(self, request, *args, **kwargs):
+        if not request.data._mutable:
+            request.data._mutable = True
+
         request.data['owner'] = request.user.id
         request.data['klass'] = self.get_object().id
-        return super().post(request, *args, **kwargs)
+
+        return super().create(request, *args, **kwargs)
