@@ -69,7 +69,7 @@ class SendMessageToClass(ListCreateAPIView):
     def get_queryset(self):
         return MessageModel.objects.all().filter(klass=self.get_object())
 
-    def get_object(self):
+    def get_object_school(self):
         obj = get_object_or_404(ClassModel, school_id=self.kwargs['pk'], pk=self.kwargs['pk_class'])
         self.check_object_permissions(obj=obj, request=self.request)
         return obj
@@ -79,6 +79,6 @@ class SendMessageToClass(ListCreateAPIView):
             request.data._mutable = True
 
         request.data['owner'] = request.user.id
-        request.data['klass'] = self.get_object().id
+        request.data['klass'] = self.get_object_school().id
 
         return super().create(request, *args, **kwargs)

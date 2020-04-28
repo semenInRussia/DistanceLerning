@@ -1,9 +1,12 @@
+import time
+
 from django.test import TestCase
 
 # Create your tests here.
 from django.contrib.auth import authenticate, get_user_model
 from django.test import TestCase, Client
 from DistanceLerning.settings import VERSION
+from django.utils import timezone
 
 from .models import ClassModel
 from auth_app.models import Subject
@@ -97,7 +100,7 @@ class ClassModelTestCase(TestCase):
                          "This status is available. Status should is 403"
                          )
 
-    def test_send_message_to_class(self) -> None:
+    def test_send_message_to_class_POST(self) -> None:
         # create user teacher
         self.client.post(self.auth_url, data={
             'username': self.username,
@@ -110,6 +113,10 @@ class ClassModelTestCase(TestCase):
         # get teacher
         user = authenticate(username=self.username, password=self.password)
 
+        self.assertNotEqual(
+            user, None,
+            'User is not authenticated'
+        )
         # login teacher
         self.client.force_login(user)
 
@@ -122,7 +129,7 @@ class ClassModelTestCase(TestCase):
 
         self.assertEqual(
             resp_send_msg.status_code, 201,
-            "Status is not available. Status should 201. Your status is"
+            "Status is not available. Status should 201."
         )
 
         # logout teacher
@@ -135,10 +142,24 @@ class ClassModelTestCase(TestCase):
             'password': self.new_password,
             'role': 'student',
         })
+
         # get student
         new_user = authenticate(username=self.new_username, password=self.new_password)
 
-        # login student
-        self.client.force_login(user)
+        self.assertNotEqual(
+            user, None,
+            'User is not authenticated'
+        )
 
-        #
+        # login student
+        self.client.force_login(new_user)
+
+        # send message
+        resp_send_msg = self.client.post(self.send_msg_url.format(klass_url=klass.get_absolute_url()), {
+            'text': 'page 43. number 123',
+        })
+
+        self.assertEqual(
+            resp_send_msg.status_code, 403,
+            f"Status is not available. Status should 403. Your status is {resp_send_msg.status_code}"
+        )
