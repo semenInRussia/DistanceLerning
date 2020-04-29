@@ -10,14 +10,14 @@ git clone https://github.com/semenInRussia/DistanceLerning.git
 ## Быстрый старт сервера
 Windows
 ```
-cd DistancLerning
+cd DistanceLerning
 python manage.py makemigrations
 python manage.py migrate
 python manage.py runserver 8000
 ```
 Linux and Mac
 ```
-cd DistancLerning
+cd DistanceLerning
 python3 manage.py makemigrations
 python3 manage.py migrate
 python3 manage.py runserver 8000
