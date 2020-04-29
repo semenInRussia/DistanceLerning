@@ -29,6 +29,9 @@ python3 manage.py runserver 8000
 * Django 3.0 для web
 * Django rest_framework для API
 
+## Контакты
+* trello https://trello.com/b/4oEXwhsw/
+
 
 ## Настройка базы данных:
 
