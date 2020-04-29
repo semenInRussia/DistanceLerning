@@ -11,6 +11,7 @@ git clone https://github.com/semenInRussia/DistanceLerning.git
 Windows
 ```
 cd DistanceLerning
+pip install -r requirements.txt
 python manage.py makemigrations
 python manage.py migrate
 python manage.py runserver 8000
@@ -18,6 +19,7 @@ python manage.py runserver 8000
 Linux and Mac
 ```
 cd DistanceLerning
+pip3 -r install requirements.txt
 python3 manage.py makemigrations
 python3 manage.py migrate
 python3 manage.py runserver 8000
