@@ -3,6 +3,25 @@
 ## Вот пример испоьзования.
 Директор создает школу. Сообщает учителям. Учителя ренистрируются создают классы приглашают учеников и спокойно могут сообщать им ДЗ.
 
+## Установка
+git clone https://github.com/semenInRussia/DistanceLerning.git
+
+## Быстрый старт сервера
+Windows
+```
+cd DistancLerning
+python manage.py makemigrations
+python manage.py migrate
+python manage.py runserver 8000
+```
+Linux and Mac
+```
+cd DistancLerning
+python3 manage.py makemigrations
+python3 manage.py migrate
+python3 manage.py runserver 8000
+```
+
 ## Вот наш стек:
 * Django 3.0 для web
 * Django rest_framework для API
