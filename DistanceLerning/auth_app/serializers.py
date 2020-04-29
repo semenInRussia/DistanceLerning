@@ -14,6 +14,7 @@ from .models import Student, Directer, Teacher, Subject, Diary
 # Get user model
 User = get_user_model()
 
+
 # Email
 class BaseSendData(NamedTuple):
     template_name: str = '_email/activation.html'
@@ -26,11 +27,14 @@ class BaseSendData(NamedTuple):
 
 def base_send_email(data: BaseSendData):
     html = render_to_string(data.template_name, context=data.context)
-    send_mail(subject=data.subject,
-              message=None,
-              from_email=data.from_email,
-              recipient_list=[data.to_email]
-              )
+    mail = send_mail(subject=data.subject,
+                     message=None,
+                     from_email=data.from_email,
+                     recipient_list=[data.to_email],
+                     html_message=html
+                     )
+
+    assert mail == 1, 'Message is not send'
 
 
 # Customers
