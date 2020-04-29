@@ -17,6 +17,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 # envirement
+DEFAULT_FROM_EMAIL = 'hrams.for.django.email@gmail.com'  # my email
 VERSION = 'v0.1'  # VERSION API
 
 INSTALLED_APPS = [
