@@ -56,5 +56,5 @@ python3 manage.py runserver
 
 ## Контакты
 * trello https://trello.com/b/4oEXwhsw/
-* jira https://semenInRussia.atlassian.net
+* jira https://semeninrussia.atlassian.net/browse/DLEARN
 
