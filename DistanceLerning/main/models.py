@@ -22,3 +22,17 @@ class School(models.Model):
         return reverse("SchoolDetail", kwargs={
             "pk": self.pk,
         })
+
+
+class SchoolTeacher:
+    school = models.ForeignKey(School, on_delete=models.CASCADE, verbose_name='Школа')
+    user = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name='Пользователь')
+    created = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
+
+    def __str__(self):
+        return f'{self.school} {self.user}'
+
+    class Meta:
+        verbose_name = 'Контакт школы и учителя'
+        verbose_name_plural = 'Контакты школы и учителя'
+        ordering = ['-created']

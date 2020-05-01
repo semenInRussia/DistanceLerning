@@ -17,7 +17,7 @@ class Customer:
     user = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name="user")
 
     def __str__(self):
-        return f"{self.user.username} {self.role}"
+        return f"{self.user} {self.role}"
 
 
 class Subject(models.Model):
@@ -77,11 +77,12 @@ class Directer(models.Model, Customer):
         verbose_name_plural = "Директора"
 
     def isDirecter(self, school: School):
-        return school.owner.id == self.id
+        return school.owner.id == self.pk
 
     @property
     def get_school_number(self):
         return get_object_or_404(School, user=self.user)
+
 
 class Assessment(models.Model):
     value = models.IntegerField("Оценка")

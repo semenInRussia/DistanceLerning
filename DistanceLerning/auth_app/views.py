@@ -4,6 +4,7 @@ from django.shortcuts import get_object_or_404
 
 # Create your views here.
 from rest_framework import status
+from rest_framework.generics import CreateAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -22,7 +23,7 @@ class AuthenticationApi(APIView):
                 serializer.save()
                 return Response(data=serializer.data, status=status.HTTP_201_CREATED)
             except AttributeError:
-                return Response( status=status.HTTP_201_CREATED)
+                return Response(status=status.HTTP_201_CREATED)
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
     def get(self, request: HttpRequest) -> Response:
@@ -75,6 +76,7 @@ class LoginView(APIView):
             return Response(status=status.HTTP_403_FORBIDDEN)
 
         return Response(status=status.HTTP_200_OK)
+
 
 class LogoutView(APIView):
 

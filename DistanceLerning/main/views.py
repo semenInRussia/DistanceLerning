@@ -1,6 +1,7 @@
 from rest_framework import permissions
 from django.shortcuts import get_object_or_404
 from rest_framework import status
+from rest_framework.generics import CreateAPIView
 from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -8,7 +9,7 @@ from rest_framework.views import APIView
 from .models import School
 # Create your views here.
 from .permissions import IsDirecter, IsOwnerSchool
-from .serializers import SchoolListSerializer, SchoolCreateSerializer
+from .serializers import SchoolListSerializer, SchoolCreateSerializer, BindTeacherUser
 
 
 # School CRUD
@@ -59,3 +60,11 @@ class SchoolDetailApi(APIView):
         school = self.get_object(pk)
         school.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class BindSchoolTeacher(CreateAPIView):
+    serializer_class = BindTeacherUser
+
+    def create(self, request, *args, **kwargs):
+        request.data['user'] = request.user
+        super(self).create(request, *args, **kwargs)
