@@ -6,9 +6,9 @@ from . import models
 
 @admin.register(models.Answer)
 class AnswerAdmin(admin.ModelAdmin):
-    list_display = ['text', 'invite', 'renouncement']
+    list_display = ['text', 'invite', 'renouncement', 'created']
 
 
 @admin.register(models.Invite)
 class AnswerAdmin(admin.ModelAdmin):
-    list_display = ['to', 'by']
+    list_display = ['to', 'by', 'created']

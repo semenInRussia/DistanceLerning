@@ -30,6 +30,7 @@ class Answer(models.Model):
     invite = models.OneToOneField("Invite", on_delete=models.CASCADE, verbose_name='Приглашение')
     renouncement = models.BooleanField(verbose_name='Согласен', default=False)
     created = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
+    owner = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name='Отправитель')
 
     class Meta:
         ordering = ['-created']

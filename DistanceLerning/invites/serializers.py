@@ -8,7 +8,7 @@ class InviteCreateSerializer(serializers.ModelSerializer):
     by_username = serializers.ReadOnlyField(source='by.username')
 
     class Meta:
-        fields = ['to', 'by', 'by_username', 'to_username']
+        fields = ['to', 'by', 'by_username', 'to_username', 'pk']
         model = Invite
 
 
@@ -19,7 +19,7 @@ class InviteListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Invite
-        fields = ['to', 'by', 'to_username', 'by_username', 'school_number']
+        fields = ['to', 'by', 'to_username', 'by_username', 'school_number', 'created', 'pk']
 
 
 class InviteAnswerSerializer(serializers.ModelSerializer):
@@ -27,4 +27,4 @@ class InviteAnswerSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Answer
-        fields = ['text', 'renouncement', 'invite', 'school_number']
+        fields = ['text', 'renouncement', 'invite', 'school_number', 'created', 'pk', 'owner']

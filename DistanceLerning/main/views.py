@@ -24,8 +24,6 @@ class SchoolApi(APIView):
 
     # POST
     def post(self, request) -> Response:
-        # todo get invites to join to School
-
         request.data['owner'] = request.user.id
 
         serializer = SchoolCreateSerializer(data=request.data)

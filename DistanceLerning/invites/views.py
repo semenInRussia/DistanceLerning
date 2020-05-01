@@ -50,7 +50,19 @@ class InviteList(ListAPIView):
 class InviteAnswer(ListCreateAPIView):
     serializer_class = InviteAnswerSerializer
 
+    def create(self, request, *args, **kwargs):
+        if not request.data._mutable:
+            request.data._mutable = True
+
+        request.data['owner'] = request.user.pk
+
+        return super().create(request, *args, **kwargs)
+
     def get_queryset(self):
+        invites_id = Invite.objects.filter(
+            by=self.request.user
+        ).values('id')
+
         return Answer.objects.all().filter(
-            to=self.request.user
+            invite_id__in=invites_id
         )
