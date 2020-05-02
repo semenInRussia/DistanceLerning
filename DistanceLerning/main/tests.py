@@ -14,10 +14,11 @@ BASE_URL = f'/api/{VERSION}'
 
 
 class SchoolTestCase(TestCase):
-    bind_school_url: str = BASE_URL + 'auth/bind/'
+    bind_school_url: str = BASE_URL + '/auth/bind/'
     auth_url: str = BASE_URL + '/auth/'
     send_invite_url: str = BASE_URL + '/invite/send/'
-    send_answer_url: str = BASE_URL+'/invite/answer/'
+    list_invite_url: str = BASE_URL + '/invite/list/'
+    send_answer_url: str = BASE_URL + '/invite/answer/'
 
     username: str = "tester"
     email: str = "tester@email.com"
@@ -170,7 +171,7 @@ class SchoolTestCase(TestCase):
         self.client.force_login(self.teacher1)
 
         # watch invites
-        get_invites_resp = self.client.get(self.send_invite_url)
+        get_invites_resp = self.client.get(self.list_invite_url)
 
         invites_string = get_invites_resp.content.decode()
 
@@ -189,5 +190,3 @@ class SchoolTestCase(TestCase):
         self.client.post(self.bind_school_url, data={
             'school': school_number,
         })
-
-

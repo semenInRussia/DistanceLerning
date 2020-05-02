@@ -7,7 +7,8 @@ from rest_framework.permissions import BasePermission
 class IsDirecter(BasePermission):
     def has_permission(self, request: HttpRequest, view):
         # User is directer
-        return request.user.is_authenticated and bool(request.user.customer)
+        return request.user.is_authenticated and \
+               bool(Directer.objects.filter(user=request.user))
 
 
 class IsOwnerSchool(BasePermission):

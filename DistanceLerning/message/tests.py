@@ -34,7 +34,7 @@ class MessageTestCase(TestCase):
 
         # Get user
         self.student1 = authenticate(username=self.username,
-                                    password=self.password)
+                                     password=self.password)
 
         self.client.post(self.auth_url, data={
             'username': self.new_username,

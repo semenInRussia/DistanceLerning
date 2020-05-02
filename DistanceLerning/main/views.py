@@ -1,8 +1,6 @@
-from rest_framework import permissions
 from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.generics import CreateAPIView
-from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -65,6 +63,9 @@ class SchoolDetailApi(APIView):
 class BindSchoolTeacher(CreateAPIView):
     serializer_class = BindTeacherUser
 
-    def create(self, request, *args, **kwargs):
+    def post(self, request, *args, **kwargs):
+        if not request.data._mutable:
+            request.data._mutable = True
         request.data['user'] = request.user
-        super(self).create(request, *args, **kwargs)
+        self.create(request, *args, **kwargs)
+
