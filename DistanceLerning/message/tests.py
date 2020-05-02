@@ -33,8 +33,8 @@ class MessageTestCase(TestCase):
         })
 
         # Get user
-        user = authenticate(username=self.username,
-                            password=self.password)
+        self.student1 = authenticate(username=self.username,
+                                    password=self.password)
 
         self.client.post(self.auth_url, data={
             'username': self.new_username,
@@ -44,20 +44,18 @@ class MessageTestCase(TestCase):
         })
 
         # Get user
-        new_user = authenticate(username=self.new_username,
-                                password=self.new_password)
+        self.student2 = authenticate(username=self.new_username,
+                                     password=self.new_password)
 
         self.assertNotEqual(
-            new_user, None,
+            self.student2, None,
             'User is not authenticated'
         )
 
-        # login new user
-        self.client.force_login(new_user)
-
+    def test_send_message(self):
         # send
         send_response = self.client.post(self.message_url, {
-            'to': user.id,
+            'to': self.student1.pk,
             'text': self.msg_text,
         })
 
@@ -70,7 +68,7 @@ class MessageTestCase(TestCase):
         )
 
         # Login recipient
-        self.client.force_login(user)
+        self.client.force_login(self.student1)
 
         # get messages
         message_response = self.client.get(self.message_url)

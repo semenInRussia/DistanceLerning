@@ -172,7 +172,6 @@ class AnswerTestCase(TestCase):
             'username': self.new_username
         })
 
-        print(resp.content.decode())
         data = json.loads(resp.content.decode())
 
         self.invite_id = data['pk']

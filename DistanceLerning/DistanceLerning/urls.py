@@ -1,8 +1,9 @@
 from django.urls import include
 from django.contrib import admin
 from django.urls import path
-from DistanceLerning.settings import VERSION
+from django.conf import settings
 
+VERSION = settings.VERSION
 
 urlpatterns = [
     path('admin/', admin.site.urls),

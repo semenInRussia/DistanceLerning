@@ -28,6 +28,6 @@ class BindTeacherUser(serializers.ModelSerializer):
         from invites.models import Answer
 
         invites = Invite.objects.all().filter(to_id=validated_data['user'])
-        if Answer.objects.filter(school_id=validated_data['school'], renouncement=True, invite_id__in=invites):
-            return super(self).create(validated_data)
-        return None
+        assert bool(Answer.objects.filter(school_id=validated_data['school'], renouncement=True, invite_id__in=invites))
+        return super(self).create(validated_data)
+
