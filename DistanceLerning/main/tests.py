@@ -187,6 +187,13 @@ class SchoolTestCase(TestCase):
             'text': 'OK',
         })
 
-        self.client.post(self.bind_school_url, data={
+        bind_teacher_resp = self.client.post(self.bind_school_url, data={
             'school': school_number,
         })
+
+        self.assertEqual(
+            bind_teacher_resp.status_code, 201,
+            f'Teacher\' and school\' bind\'s status is not available. '
+            f'Status should is 201. '
+            f'Your status is {bind_teacher_resp.status_code}.'
+        )
