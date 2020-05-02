@@ -3,6 +3,8 @@ from django.http import HttpRequest
 from rest_framework import permissions
 from rest_framework.permissions import BasePermission
 
+from .models import BindSchoolTeacherModel
+
 
 class IsDirecter(BasePermission):
     def has_permission(self, request: HttpRequest, view):
@@ -22,3 +24,10 @@ class IsOwnerSchool(BasePermission):
 
         # Instance must have an attribute named `owner`.
         return obj.owner == request.user
+
+
+class UserIsInSchool(BasePermission):
+    def has_object_permission(self, request, view, obj):
+        return bool(
+            BindSchoolTeacherModel.objects.all().filter(school=obj, user=request.user)
+        )

@@ -14,7 +14,7 @@ BASE_URL = f'/api/{VERSION}'
 
 
 class SchoolTestCase(TestCase):
-    bind_school_url: str = BASE_URL + '/auth/bind/'
+    bind_school_url: str = BASE_URL + '/bind/'
     auth_url: str = BASE_URL + '/auth/'
     send_invite_url: str = BASE_URL + '/invite/send/'
     list_invite_url: str = BASE_URL + '/invite/list/'
@@ -187,13 +187,13 @@ class SchoolTestCase(TestCase):
             'text': 'OK',
         })
 
-        bind_teacher_resp = self.client.post(self.bind_school_url, data={
-            'school': school_number,
+        bind_teacher_resp = self.client.post(path=self.bind_school_url, data={
+            'school_number': school_number,
         })
 
         self.assertEqual(
             bind_teacher_resp.status_code, 201,
-            f'Teacher\' and school\' bind\'s status is not available. '
+            f'Teacher\'s and school\'s bind status is not available. '
             f'Status should is 201. '
             f'Your status is {bind_teacher_resp.status_code}.'
         )

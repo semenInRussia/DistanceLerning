@@ -24,7 +24,7 @@ class School(models.Model):
         })
 
 
-class SchoolTeacher:
+class BindSchoolTeacherModel:
     school = models.ForeignKey(School, on_delete=models.CASCADE, verbose_name='Школа')
     user = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name='Пользователь')
     created = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
