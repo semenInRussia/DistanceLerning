@@ -29,6 +29,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'main',
+    'message',
     'class_',
     'auth_app',
     'invites',

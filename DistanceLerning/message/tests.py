@@ -49,14 +49,22 @@ class MessageTestCase(TestCase):
 
         self.assertNotEqual(
             self.student2, None,
-            'User is not authenticated'
+            'User student2 is not authenticated'
+        )
+
+        self.assertNotEqual(
+            self.student1, None,
+            'User student2 is not authenticated'
         )
 
     def test_send_message(self):
+        # login
+        self.client.force_login(self.student2)
         # send
         send_response = self.client.post(self.message_url, {
             'to': self.student1.pk,
             'text': self.msg_text,
+            'subject': self.msg_subject
         })
 
         # assert created

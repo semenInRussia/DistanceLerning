@@ -5,9 +5,11 @@ from django.db import models
 
 User = get_user_model()
 
+
 class Message(models.Model):
-    to = models.OneToOneField(to=User, on_delete=models.CASCADE, verbose_name='Получатель')
-    from_user = models.OneToOneField(to=User, on_delete=models.CASCADE, verbose_name='Отправитель')
+    to = models.OneToOneField(to=User, on_delete=models.CASCADE, verbose_name='Получатель', related_name="received")
+    from_user = models.OneToOneField(to=User, on_delete=models.CASCADE, verbose_name='Отправитель',
+                                     related_name="sent")
     created = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
     text = models.TextField(verbose_name='Текст')
     subject = models.CharField(verbose_name='Тема', max_length=255)
