@@ -157,6 +157,9 @@ class SchoolTestCase(TestCase):
                          )
 
     def test_school_user_bind(self) -> None:
+        School.objects.create(owner=self.directer,
+                              number=1200)
+
         # login directer
         self.client.force_login(self.directer)
 

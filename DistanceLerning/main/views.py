@@ -71,9 +71,10 @@ class BindSchoolTeacher(CreateAPIView):
             request.data._mutable = True
 
         if request.data.get('school_number'):
-            request.data['school'] = get_object_or_404(School, number=request.data['school_number'])
-        request.data['user'] = request.user
-        self.create(request, *args, **kwargs)
+            request.data['school'] = get_object_or_404(School, number=request.data['school_number']).pk
+        request.data['user'] = request.user.pk
+
+        return self.create(request, *args, **kwargs)
 
 
 class ListTeacherInSchool(APIView):
