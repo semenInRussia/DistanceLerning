@@ -1,7 +1,10 @@
-name: Django CI
+name: Django-CI
 
 on:
-  commit_comment:
+  push:
+    branches: 
+      - dev
+      - master
 
 
 jobs:
