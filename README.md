@@ -21,7 +21,7 @@ python manage.py runserver 8000
 Linux and Mac
 ```
 cd DistanceLerning
-pip3 -r install requirements.txt
+pip3 install -r requirements.txt
 python3 manage.py makemigrations
 python3 manage.py migrate
 python3 manage.py runserver 8000
