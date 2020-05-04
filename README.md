@@ -1,9 +1,9 @@
 # DistanceLerning (Дист. обучение)
-![status](https://github.com/semenInRussia/DistanceLerning/workflows/Django-CI/badge.svg?branch=dev)
+![tests for dev](https://github.com/semenInRussia/DistanceLerning/workflows/Django-CI/badge.svg?branch=dev)
 
 Этот проект сделан для школ, для их учеников и их учителей.
-## Вот пример испоьзования.
-Директор создает школу. Сообщает учителям. Учителя ренистрируются создают классы приглашают учеников и спокойно могут сообщать им ДЗ.
+## Вот пример использования.
+Директор создаёт школу. Сообщает учителям. Учителя ренистрируются, создают классы, приглашают учеников и спокойно могут сообщать им ДЗ.
 
 ## Установка
 ```
@@ -29,7 +29,7 @@ python3 manage.py runserver 8000
 
 ## Вот наш стек:
 * Django 3.0 для web
-* Django rest_framework для API
+* Django rest_framework для работы с API
 
 
 ## Настройка базы данных:
