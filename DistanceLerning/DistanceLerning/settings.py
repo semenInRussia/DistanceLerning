@@ -33,7 +33,6 @@ INSTALLED_APPS = [
     'class_',
     'auth_app',
     'invites',
-    'djoser',
     'teacher_app',
 ]
 
