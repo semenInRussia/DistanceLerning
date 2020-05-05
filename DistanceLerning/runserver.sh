@@ -1,3 +1,8 @@
 pip install gunicorn
 
-gunicorn DistanceLerning.wsgi
+ls
+
+gunicorn wsgi
+
+# python /app/manage.py runserver
+
