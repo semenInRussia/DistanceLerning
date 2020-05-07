@@ -1,17 +1,18 @@
-# Use postgres/example user/password credentials
-version: '3.1'
+
+version: '3'
 
 services:
-
   db:
     image: postgres
-    restart: always
     environment:
-      POSTGRES_PASSWORD: feijrghrugtrpehrfeihrfgipeai01
-      POSTGRES_USER: semen
-
-  django:
+      - POSTGRES_DB=distance_lerning
+      - POSTGRES_USER=semen
+      - POSTGRES_PASSWORD=feijrghrugtrpehrfeihrfgipeai01
+  web:
     image: docker.pkg.github.com/semeninrussia/distancelerning/django-gunicorn:0.1
-    restart: always
+    volumes:
+      - .:/app
     ports:
-      - 8000:8000
+      - "8000:8000"
+    depends_on:
+      - db
