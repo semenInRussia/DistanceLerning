@@ -1,0 +1,18 @@
+
+version: '3'
+
+services:
+  db:
+    image: postgres
+    environment:
+      - POSTGRES_DB=distance_lerning
+      - POSTGRES_USER=semen
+      - POSTGRES_PASSWORD=feijrghrugtrpehrfeihrfgipeai01
+  web:
+    image: docker.pkg.github.com/semeninrussia/distancelerning/django-gunicorn:0.1
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
