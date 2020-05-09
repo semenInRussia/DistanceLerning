@@ -5,11 +5,12 @@ from django.shortcuts import get_object_or_404
 # Create your views here.
 from rest_framework import status
 from rest_framework.generics import CreateAPIView
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from .models import Teacher, Student, Directer, ActivationCode
-from .serializers import RegistrationSerializer, UserAllSerializer, UserUpdateSerializer
+from .serializers import RegistrationSerializer, UserAllSerializer, UserUpdateSerializer, MeSerializer
 
 User = get_user_model()
 
@@ -101,3 +102,10 @@ class ActivateView(APIView):
             'code is not valid'
         ]
         return Response(status=400, data=error_data)
+
+class MeView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request: HttpRequest):
+        serializer = MeSerializer(instance=request.user)
+        return Response(data=serializer.data, status=200)

@@ -121,3 +121,8 @@ class UserUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['username', 'email']
+
+class MeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['is_active', 'is_staff', 'username', 'email', ]
