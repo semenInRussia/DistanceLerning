@@ -1,7 +1,9 @@
 from django.contrib.auth import get_user_model, authenticate
 from django.test import TestCase, Client
 from DistanceLerning.settings import VERSION
-from .models import Subject, Student, Diary, Teacher, Directer
+from .models import Subject, Student, Diary, Teacher, Directer, ActivationCode
+
+BASE_URL = "/api/{VERSION}/".format(VERSION=VERSION)
 
 User = get_user_model()
 
@@ -230,3 +232,44 @@ class AuthTestCase(TestCase):
             'Status is not available\n'
             'Status is 200'
         )
+
+class ActivationCodeTestCase(TestCase):
+    auth_url = BASE_URL + 'auth/'
+    activate_url = BASE_URL + 'auth/activate/'
+
+    password = 'password'
+    username = 'username'
+
+    def setUp(self) -> None:
+        # create user
+        self.client.post(self.auth_url, data={
+            'username': self.username,
+            'password': self.password,
+            'email': 'email@email.com',
+            'role': 'student',
+        })
+
+        self.test_user = authenticate(username=self.username,
+                                      password=self.password)
+
+    def test_activate(self) -> None:
+        # login user
+        self.client.force_login(self.test_user)
+        # get activation code
+        self.assertEqual(
+            ActivationCode.objects.count(), 1,
+            'ActivationCode is not created'
+        )
+
+        activation_code = ActivationCode.objects.get(user=self.test_user)
+        code = activation_code.code
+
+        activate_resp = self.client.post(self.activate_url, data={'code': code})
+
+        self.assertEqual(
+            activate_resp.status_code, 200,
+            'Activate status code is not valid. '
+            'Status should is 200 '
+            'Your status is {}'.format(activate_resp.status_code)
+        )
+
