@@ -8,7 +8,7 @@ from rest_framework.generics import CreateAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .models import Teacher, Student, Directer
+from .models import Teacher, Student, Directer, ActivationCode
 from .serializers import RegistrationSerializer, UserAllSerializer, UserUpdateSerializer
 
 User = get_user_model()
@@ -85,3 +85,19 @@ class LogoutView(APIView):
             logout(request=request)
             return Response(status=status.HTTP_200_OK)
         return Response(status=status.HTTP_403_FORBIDDEN)
+
+
+class ActivateView(APIView):
+    def post(self, request: HttpRequest):
+        user = request.user
+        code = request.data.get('code')
+        activation_code = ActivationCode.objects.filter(user=user, code=code)
+
+        if activation_code:
+            user.is_active = True
+            return Response(status=200)
+
+        error_data = [
+            'code is not valid'
+        ]
+        return Response(status=400, data=error_data)

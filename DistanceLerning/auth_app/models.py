@@ -1,6 +1,9 @@
+import random
+
 from django.contrib.auth import get_user_model
 from django.db import models
 from django.shortcuts import get_object_or_404
+from django.utils import timezone
 from main.models import School
 
 # Create your models here.
@@ -116,3 +119,30 @@ class Diary(models.Model):
         diary.student = student
         diary.save()
         return diary
+
+
+class ActivationCode(models.Model):
+    code = models.IntegerField(verbose_name='Цифровой код')
+    user = models.ForeignKey(verbose_name='Пользователь', to=User, on_delete=models.CASCADE)
+    created = models.DateTimeField(verbose_name='Время создания', auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user}"
+
+    class Meta:
+        verbose_name = 'Код активации'
+        verbose_name_plural = 'Коды активации'
+        ordering = ['-created']
+
+    @classmethod
+    def create(cls, user: User):    
+        obj = cls()
+        # create code
+        code = int(''.join([str(random.randint(0, 9)) for _ in range(6)]))
+
+        obj.user = user
+        obj.code = code
+        obj.created = timezone.now()
+        obj.save()
+
+        return obj

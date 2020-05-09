@@ -7,7 +7,7 @@ from django.db import IntegrityError
 from django.template.loader import render_to_string
 from rest_framework import serializers
 
-from .models import Student, Directer, Teacher, Subject, Diary
+from .models import Student, Directer, Teacher, Subject, Diary, ActivationCode
 
 # Creating your serializers here.
 
@@ -25,16 +25,19 @@ class BaseSendData(NamedTuple):
     from_email: str = settings.DEFAULT_FROM_EMAIL
 
 
-def base_send_email(data: BaseSendData):
+def base_send_email(data: BaseSendData) -> int:
+    activation_code = ActivationCode.create(user=data.context.get('user'))
+    data.context['code'] = activation_code.code
+
     html = render_to_string(data.template_name, context=data.context)
+
     mail = send_mail(subject=data.subject,
                      message=None,
                      from_email=data.from_email,
                      recipient_list=[data.to_email],
                      html_message=html
                      )
-
-    assert mail == 1, 'Message is not send'
+    return mail
 
 
 # Customers
@@ -98,14 +101,12 @@ class RegistrationSerializer(serializers.ModelSerializer):
             "user": user,
         }, subject_title="Активация пользователя",
             to_email=user.email)
-
         base_send_email(data)
 
         role = validated_data['role']
-
-        create_customer(role=role,
-                        subject=validated_data['subject'],
-                        user=user)
+        customer = create_customer(role=role,
+                                   subject=validated_data['subject'],
+                                   user=user)
         user.is_active = False
         return user
 
