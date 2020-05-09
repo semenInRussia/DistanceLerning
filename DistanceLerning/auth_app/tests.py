@@ -1,3 +1,5 @@
+import json
+
 from django.contrib.auth import get_user_model, authenticate
 from django.test import TestCase, Client
 from DistanceLerning.settings import VERSION
@@ -236,6 +238,7 @@ class AuthTestCase(TestCase):
 class ActivationCodeTestCase(TestCase):
     auth_url = BASE_URL + 'auth/'
     activate_url = BASE_URL + 'auth/activate/'
+    me_url = BASE_URL + 'auth/me/'
 
     password = 'password'
     username = 'username'
@@ -271,5 +274,14 @@ class ActivationCodeTestCase(TestCase):
             'Activate status code is not valid. '
             'Status should is 200 '
             'Your status is {}'.format(activate_resp.status_code)
+        )
+
+        profile_data = self.client.get(self.me_url)
+        profile_data_string = profile_data.content.decode()
+        profile_data_json = json.loads(profile_data_string)
+
+        self.assertEqual(
+            profile_data_json.get('is_active'), True,
+            'User is not activated.'
         )
 
