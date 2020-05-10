@@ -1,7 +1,7 @@
 from django.http import HttpRequest
 from django.shortcuts import get_object_or_404
 from rest_framework import status
-from rest_framework.generics import CreateAPIView
+from rest_framework.generics import CreateAPIView, ListCreateAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -9,12 +9,18 @@ from rest_framework.views import APIView
 from .models import School
 # Create your views here.
 from .permissions import IsDirecter, IsOwnerSchool, UserIsInSchool
-from .serializers import SchoolListSerializer, SchoolCreateSerializer, BindTeacherUserSerializer
+from .serializers import SchoolListSerializer, SchoolCreateSerializer, BindTeacherUserSerializer, AssessmentSerializer
 
 # School CRUD
 from auth_app.serializers import UserAllSerializer
 
 from auth_app.permissions import IsActiveUser
+
+from class_.permissions import IsOwnerClass
+
+from auth_app.models import Assessment
+
+from auth_app.models import Diary
 
 
 class SchoolApi(APIView):
@@ -90,7 +96,27 @@ class ListTeacherInSchool(APIView):
         return obj
 
     def get(self, request: HttpRequest, pk):
-        qs = BindSchoolTeacher.objects.all().filter(school=self.get_school(pk))\
+        qs = BindSchoolTeacher.objects.all().filter(school=self.get_school(pk)) \
             .values('user')
         serializer = UserAllSerializer(qs, many=True)
         return Response(data=serializer.data, status=200)
+
+
+class Rate(ListCreateAPIView):
+    serializer_class = AssessmentSerializer
+    permission_classes = [IsOwnerClass, IsActiveUser]
+
+    def get_queryset(self):
+        return Assessment.objects.all().filter(diary_student=self.request.user)
+
+    def post(self, request, *args, **kwargs):
+        self.check_object_permissions(request, request.user)
+        if not request.data._mutable:
+            request.data._mutable = True
+
+        request.data['diary'] = self.get_diary(request.data.get('student'))
+
+        super().post(request, *args, **kwargs)
+
+    def get_diary(self, student_id: int):
+        return get_object_or_404(Diary, student_id=student_id)
