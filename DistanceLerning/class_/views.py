@@ -13,6 +13,7 @@ from rest_framework import generics
 from .models import ClassModel, MessageModel
 from .permissions import IsOwnerClass
 from .serializers import ClassListSerializer, MessageClassSerializer
+from auth_app.permissions import IsActiveUser
 
 
 class ClassApi(APIView):
@@ -64,7 +65,7 @@ class ClassApiDetail(generics.RetrieveUpdateDestroyAPIView):
 
 class SendMessageToClass(ListCreateAPIView):
     serializer_class = MessageClassSerializer
-    permission_classes = [IsOwnerClass]
+    permission_classes = [IsOwnerClass, IsActiveUser]
 
     def get_queryset(self):
         return MessageModel.objects.all().filter(klass=self.get_object_school())

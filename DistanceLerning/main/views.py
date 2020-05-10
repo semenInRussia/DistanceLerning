@@ -2,6 +2,7 @@ from django.http import HttpRequest
 from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.generics import CreateAPIView
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -12,6 +13,8 @@ from .serializers import SchoolListSerializer, SchoolCreateSerializer, BindTeach
 
 # School CRUD
 from auth_app.serializers import UserAllSerializer
+
+from auth_app.permissions import IsActiveUser
 
 
 class SchoolApi(APIView):
@@ -39,7 +42,7 @@ class SchoolApi(APIView):
 # School Receiver
 class SchoolDetailApi(APIView):
     # Permissions
-    permission_classes = [IsOwnerSchool]
+    permission_classes = [IsOwnerSchool, IsActiveUser]
 
     def get_object(self, pk):
         school = get_object_or_404(School, pk=pk)
@@ -65,6 +68,7 @@ class SchoolDetailApi(APIView):
 
 class BindSchoolTeacher(CreateAPIView):
     serializer_class = BindTeacherUserSerializer
+    permission_classes = [IsActiveUser, IsAuthenticated]
 
     def post(self, request, *args, **kwargs):
         if not request.data._mutable:

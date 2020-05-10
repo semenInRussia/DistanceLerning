@@ -6,13 +6,16 @@ from rest_framework.mixins import CreateModelMixin, ListModelMixin, RetrieveMode
     DestroyModelMixin
 
 from auth_app.models import Subject
+from rest_framework.permissions import IsAuthenticated
 
 from .serializers import SubjectSerializer, SubjectCreateSerializer
+from auth_app.permissions import IsActiveUser
 
 
 class SubjectApi(GenericAPIView, CreateModelMixin, ListModelMixin):
     queryset = Subject.objects.all()
     serializer_class = SubjectSerializer
+    permission_classes = [IsAuthenticated, IsActiveUser]
 
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
@@ -21,7 +24,7 @@ class SubjectApi(GenericAPIView, CreateModelMixin, ListModelMixin):
         return self.create(request, *args, **kwargs)
 
 
-class SubjectDetail(RetrieveModelMixin, UpdateModelMixin, DestroyModelMixin, GenericAPIView):
+class SubjectDetail(RetrieveModelMixin, GenericAPIView):
     queryset = Subject.objects.all()
     serializer_class = SubjectSerializer
 

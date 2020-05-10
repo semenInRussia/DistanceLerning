@@ -3,12 +3,15 @@ from django.shortcuts import render
 
 # Create your views here.
 from rest_framework.generics import ListCreateAPIView
+from rest_framework.permissions import IsAuthenticated
 
 from .models import Message
 from .serializers import MessageSerializer
+from auth_app.permissions import IsActiveUser
 
 
 class message(ListCreateAPIView):
+    permission_classes = [IsAuthenticated, IsActiveUser]
     serializer_class = MessageSerializer
 
     def get_queryset(self):

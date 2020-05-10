@@ -10,6 +10,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from .models import Teacher, Student, Directer, ActivationCode
+from .permissions import IsActiveUser, IsLoginUser
 from .serializers import RegistrationSerializer, UserAllSerializer, UserUpdateSerializer, MeSerializer
 
 User = get_user_model()
@@ -28,14 +29,17 @@ class AuthenticationApi(APIView):
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
     def get(self, request: HttpRequest) -> Response:
-        qs = User.objects.all()
+        qs = User.objects.all().filter(is_active=True)
         serializer = UserAllSerializer(qs, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class UserDetailApi(APIView):
+    permission_classes = [IsAuthenticated, IsActiveUser, IsLoginUser]
+
     def get_object(self, pk: int):
         user = get_object_or_404(User, pk=pk)
+        self.check_object_permissions(self.request, user)
         return user
 
     def get(self, request: HttpRequest, pk: int) -> Response:
@@ -80,6 +84,7 @@ class LoginView(APIView):
 
 
 class LogoutView(APIView):
+    permission_classes = [IsAuthenticated]
 
     def post(self, request: HttpRequest) -> Response:
         if request.user.is_authenticated:
@@ -89,6 +94,8 @@ class LogoutView(APIView):
 
 
 class ActivateView(APIView):
+    permission_classes = [IsAuthenticated]
+
     def post(self, request: HttpRequest):
         user = request.user
         code = request.data.get('code')
@@ -102,6 +109,7 @@ class ActivateView(APIView):
             'code is not valid'
         ]
         return Response(status=400, data=error_data)
+
 
 class MeView(APIView):
     permission_classes = [IsAuthenticated]

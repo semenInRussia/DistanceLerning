@@ -107,7 +107,8 @@ class RegistrationSerializer(serializers.ModelSerializer):
         customer = create_customer(role=role,
                                    subject=validated_data['subject'],
                                    user=user)
-        user.is_active = False
+        if not settings.DEBUG:
+            user.is_active = False
         return user
 
 
@@ -121,6 +122,7 @@ class UserUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['username', 'email']
+
 
 class MeSerializer(serializers.ModelSerializer):
     class Meta:
