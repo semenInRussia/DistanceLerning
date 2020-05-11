@@ -28,11 +28,5 @@ class InviteAnswerSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Answer
-        fields = ['text', 'renouncement', 'invite', 'school_number', 'created', 'pk', 'owner',
-                  'is_invite_to_class', 'is_invite_to_school']
+        fields = ['text', 'renouncement', 'invite', 'school_number', 'created', 'pk', 'owner']
 
-    def validate(self, attrs):
-        values = [attrs['is_invite_to_class'], attrs['is_invite_to_school']]
-
-        if (True not in values) and (False not in values):
-            raise serializers.ValidationError('set is_invite_to_school or is_invite_to_school at true or false')

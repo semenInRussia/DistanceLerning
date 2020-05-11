@@ -17,11 +17,11 @@ class Invite(models.Model):
 
     @property
     def is_invite_to_class(self) -> bool:
-        return bool(Student.objects.all().filter(user=self.by))
+        return bool(Student.objects.all().filter(user=self.to))
 
     @property
     def is_invite_to_school(self) -> bool:
-        return bool(Teacher.objects.all().filter(user=self.by))
+        return bool(Teacher.objects.all().filter(user=self.to))
 
     @property
     def get_school_number(self) -> int:
