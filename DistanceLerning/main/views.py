@@ -101,7 +101,7 @@ class ListTeacherInSchool(APIView):
         serializer = UserAllSerializer(qs, many=True)
         return Response(data=serializer.data, status=200)
 
-
+# [FAILING]
 class Rate(ListCreateAPIView):
     serializer_class = AssessmentSerializer
     permission_classes = [IsOwnerClass, IsActiveUser]
@@ -109,8 +109,12 @@ class Rate(ListCreateAPIView):
     def get_queryset(self):
         return Assessment.objects.all().filter(diary_student=self.request.user)
 
+    # todo get class
+    def get_class(self):
+        return None
+
     def post(self, request, *args, **kwargs):
-        self.check_object_permissions(request, request.user)
+        self.check_object_permissions(request, self.get_class())
         if not request.data._mutable:
             request.data._mutable = True
 
