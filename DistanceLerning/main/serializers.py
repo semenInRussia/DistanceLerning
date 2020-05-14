@@ -1,8 +1,7 @@
-from rest_framework import serializers
-from .models import School, BindSchoolTeacherModel
-from invites.models import Invite
-
 from auth_app.models import Assessment
+from rest_framework import serializers
+
+from .models import School, BindSchoolTeacherModel, BindStudentClassModel
 
 
 class SchoolListSerializer(serializers.ModelSerializer):
@@ -26,12 +25,10 @@ class BindTeacherUserSerializer(serializers.ModelSerializer):
         fields = ['user', 'school', 'created']
         model = BindSchoolTeacherModel
 
-    # def create(self, validated_data):
-    #     from invites.models import Answer
-    #
-    #     invites = Invite.objects.all().filter(to_id=validated_data['user'])
-    #     # assert bool(Answer.objects.filter(school_id=validated_data['school'], renouncement=True, invite_id__in=invites))
-    #     return super(self).create(validated_data)
+class BindStudentClassSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BindStudentClassModel
+        fields = ['user', 'class', 'created']
 
 class AssessmentSerializer(serializers.ModelSerializer):
     student_name = serializers.ReadOnlyField(source='diary.student.user.username')

@@ -4,15 +4,13 @@ from django.contrib.auth import get_user_model
 from django.db import models
 from django.urls import reverse
 
-from main.models import School
-
 User = get_user_model()
 
 
 class ClassModel(models.Model):
     number_class = models.IntegerField("Цифра")
     char_class = models.CharField("Буква", max_length=2)
-    school = models.ForeignKey(School, verbose_name="Школа", on_delete=models.CASCADE)
+    school = models.ForeignKey("main.School", verbose_name="Школа", on_delete=models.CASCADE, related_name='+')
     owner = models.ForeignKey(User, verbose_name="Создатель", on_delete=models.CASCADE)
 
     class Meta:

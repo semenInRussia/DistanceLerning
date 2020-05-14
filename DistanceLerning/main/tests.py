@@ -14,7 +14,7 @@ BASE_URL = f'/api/{VERSION}'
 
 
 class SchoolTestCase(TestCase):
-    bind_school_url: str = BASE_URL + '/bind/'
+    bind_school_url: str = BASE_URL + '/bind-school/'
     auth_url: str = BASE_URL + '/auth/'
     send_invite_url: str = BASE_URL + '/invite/send/'
     list_invite_url: str = BASE_URL + '/invite/list/'
@@ -179,7 +179,7 @@ class SchoolTestCase(TestCase):
         invites_string = get_invites_resp.content.decode()
 
         json_data = json.loads(invites_string)
-
+        print(json_data)
         first_invite_id = json_data[0]['pk']
         school_number = json_data[0]['school_number']
 

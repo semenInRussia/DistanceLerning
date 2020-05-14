@@ -5,7 +5,7 @@ from main.models import School
 # Create your views here.
 from rest_framework import status
 from rest_framework.generics import ListCreateAPIView, ListAPIView
-from rest_framework.permissions import IsAdminUser
+from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import generics
@@ -14,6 +14,9 @@ from .models import ClassModel, MessageModel
 from .permissions import IsOwnerClass
 from .serializers import ClassListSerializer, MessageClassSerializer
 from auth_app.permissions import IsActiveUser
+
+from auth_app.serializers import UserAllSerializer
+from main.models import BindStudentClassModel
 
 
 class ClassApi(APIView):
@@ -83,3 +86,15 @@ class SendMessageToClass(ListCreateAPIView):
         request.data['klass'] = self.get_object_school().id
 
         return super().create(request, *args, **kwargs)
+
+
+class ClassTeam(ListAPIView):
+    serializer_class = UserAllSerializer
+    permission_classes = [IsAuthenticated, IsActiveUser]
+
+    def get_queryset(self):
+        # get queryset on user=request.user
+        bind_qs = BindStudentClassModel.objects.all().filter(user=self.request.user)
+
+        # get user
+        return bind_qs.views('user')

@@ -9,7 +9,8 @@ from rest_framework.views import APIView
 from .models import School
 # Create your views here.
 from .permissions import IsDirecter, IsOwnerSchool, UserIsInSchool
-from .serializers import SchoolListSerializer, SchoolCreateSerializer, BindTeacherUserSerializer, AssessmentSerializer
+from .serializers import SchoolListSerializer, SchoolCreateSerializer, BindTeacherUserSerializer, AssessmentSerializer, \
+    BindStudentClassSerializer
 
 # School CRUD
 from auth_app.serializers import UserAllSerializer
@@ -21,6 +22,8 @@ from class_.permissions import IsOwnerClass
 from auth_app.models import Assessment
 
 from auth_app.models import Diary
+
+from class_.models import ClassModel
 
 
 class SchoolApi(APIView):
@@ -87,6 +90,28 @@ class BindSchoolTeacher(CreateAPIView):
         return self.create(request, *args, **kwargs)
 
 
+class BindStudentClass(CreateAPIView):
+    permission_classes = [IsAuthenticated, IsActiveUser]
+    serializer_class = BindStudentClassSerializer
+
+    def post(self, request, *args, **kwargs):
+        if not request.data._mutable:
+            request.data._mutable = True
+
+        if request.data.get('school_number'):
+            school = get_object_or_404(School, number=request.data['school_number'])
+
+        char_class = request.data.get('char_class')
+        number_class = request.data.get('number_class')
+
+        klass = get_object_or_404(ClassModel, char_class=char_class,
+                                  number_class=number_class,
+                                  school=school)
+
+        request.data['user'] = request.user.pk
+
+        return self.create(request, *args, **kwargs)
+
 class ListTeacherInSchool(APIView):
     permission_classes = [UserIsInSchool]
 
@@ -100,6 +125,7 @@ class ListTeacherInSchool(APIView):
             .values('user')
         serializer = UserAllSerializer(qs, many=True)
         return Response(data=serializer.data, status=200)
+
 
 # [FAILING]
 class Rate(ListCreateAPIView):
