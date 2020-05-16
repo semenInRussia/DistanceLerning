@@ -6,7 +6,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .models import School
+from .models import School, BindStudentClassModel
 # Create your views here.
 from .permissions import IsDirecter, IsOwnerSchool, UserIsInSchool
 from .serializers import SchoolListSerializer, SchoolCreateSerializer, BindTeacherUserSerializer, AssessmentSerializer, \
@@ -90,27 +90,45 @@ class BindSchoolTeacher(CreateAPIView):
         return self.create(request, *args, **kwargs)
 
 
-class BindStudentClass(CreateAPIView):
+class BindStudentClass(ListCreateAPIView):
     permission_classes = [IsAuthenticated, IsActiveUser]
     serializer_class = BindStudentClassSerializer
+
+    def get_klass(self):
+        char_class = self.request.data.get('char_class')
+        number_class = self.request.data.get('number_class')
+
+        school = self.get_school()
+        klass = get_object_or_404(ClassModel, char_class=char_class,
+                                  number_class=number_class,
+                                  school=school)
+
+        return klass
+
+    def get_school(self):
+        number = self.request.data.get('school_number')
+        pk = self.request.data.get('school')
+
+        if number:
+            return get_object_or_404(School, number=number)
+        else:
+            return get_object_or_404(School, pk=pk)
 
     def post(self, request, *args, **kwargs):
         if not request.data._mutable:
             request.data._mutable = True
 
-        if request.data.get('school_number'):
-            school = get_object_or_404(School, number=request.data['school_number'])
-
-        char_class = request.data.get('char_class')
-        number_class = request.data.get('number_class')
-
-        klass = get_object_or_404(ClassModel, char_class=char_class,
-                                  number_class=number_class,
-                                  school=school)
+        request.data['klass'] = self.get_klass().pk
 
         request.data['user'] = request.user.pk
 
         return self.create(request, *args, **kwargs)
+
+    def get_queryset(self):
+        return BindStudentClassModel.objects.all().filter(
+            klass=self.get_klass(),
+        ).values('user')
+
 
 class ListTeacherInSchool(APIView):
     permission_classes = [UserIsInSchool]
