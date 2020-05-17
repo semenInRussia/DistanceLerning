@@ -8,6 +8,8 @@ from auth_app.models import Subject
 # Create your tests here.
 from main.models import School
 
+from class_.models import ClassModel
+
 VERSION = settings.VERSION
 
 BASE_URL = f'/api/{VERSION}'
@@ -15,6 +17,8 @@ BASE_URL = f'/api/{VERSION}'
 
 class SchoolTestCase(TestCase):
     bind_school_url: str = BASE_URL + '/bind-school/'
+    bind_klass_student: str = BASE_URL + '/bind-class/'
+
     auth_url: str = BASE_URL + '/auth/'
     send_invite_url: str = BASE_URL + '/invite/send/'
     list_invite_url: str = BASE_URL + '/invite/list/'
@@ -179,7 +183,6 @@ class SchoolTestCase(TestCase):
         invites_string = get_invites_resp.content.decode()
 
         json_data = json.loads(invites_string)
-        print(json_data)
         first_invite_id = json_data[0]['pk']
         school_number = json_data[0]['school_number']
 
@@ -200,3 +203,54 @@ class SchoolTestCase(TestCase):
             f'Status should is 201. '
             f'Your status is {bind_teacher_resp.status_code}.'
         )
+
+    def test_klass_user_bind(self) -> None:
+        char_class: str = 'a'
+        number_class: int = 1
+
+        school_number: int = 1200
+
+        school = School.objects.create(owner=self.directer, number=school_number)
+
+        self.client.force_login(self.directer)
+
+        self.client.post(self.send_invite_url, data={
+            "username": self.teacher1.username,
+        })
+
+        self.client.logout()
+
+        self.client.force_login(self.teacher1)
+
+        # watch invites
+        get_invites_resp = self.client.get(self.list_invite_url)
+
+        invites_string = get_invites_resp.content.decode()
+
+        json_data = json.loads(invites_string)
+        first_invite_id = json_data[0]['pk']
+        school_number = json_data[0]['school_number']
+
+        # Send answer
+        self.client.post(self.send_answer_url, data={
+            'invite': first_invite_id,
+            'renouncement': True,
+            'text': 'OK',
+        })
+
+        self.client.post(path=self.bind_school_url, data={
+            'school_number': school_number,
+        })
+
+        klass = ClassModel.objects.create(char_class=char_class,
+                                          number_class=number_class,
+                                          owner=self.teacher1,
+                                          school=school)
+
+        bind_klass_student_resp = self.client.post(self.bind_klass_student,
+                                                   data={'number_class': number_class, 'char_class': char_class,
+                                                         'school_number': number_class, })
+        self.assertEqual(bind_klass_student_resp.status_code, 201,
+                         'Status is wrong.'
+                         ' Status should is 201'
+                         '. Your Status is {}'.format(bind_klass_student_resp.status_code))
