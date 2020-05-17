@@ -248,9 +248,11 @@ class SchoolTestCase(TestCase):
                                           school=school)
 
         bind_klass_student_resp = self.client.post(self.bind_klass_student,
-                                                   data={'number_class': number_class, 'char_class': char_class,
-                                                         'school_number': number_class, })
+                                                   data={'number_class': number_class,
+                                                         'char_class': char_class,
+                                                         'school_number': school_number, })
+
         self.assertEqual(bind_klass_student_resp.status_code, 201,
-                         'Status is wrong.'
-                         ' Status should is 201'
-                         '. Your Status is {}'.format(bind_klass_student_resp.status_code))
+                         'Status is wrong. '
+                         'Status should is 201. '
+                         'Your Status is {}.'.format(bind_klass_student_resp.status_code))
