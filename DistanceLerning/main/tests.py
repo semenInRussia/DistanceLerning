@@ -207,6 +207,7 @@ class SchoolTestCase(TestCase):
     def test_klass_user_bind(self) -> None:
         char_class: str = 'a'
         number_class: int = 1
+        klass_name: str = f'{number_class}{char_class.lower()}'
 
         school_number: int = 1200
 
@@ -255,4 +256,22 @@ class SchoolTestCase(TestCase):
         self.assertEqual(bind_klass_student_resp.status_code, 201,
                          'Status is wrong. '
                          'Status should is 201. '
-                         'Your Status is {}.'.format(bind_klass_student_resp.status_code))
+                         'Your Status is {}.'.format(
+                             bind_klass_student_resp.status_code))
+
+        bind_klass_student_resp = self.client.get(self.bind_klass_student)
+
+        data_string = bind_klass_student_resp.content.decode()
+
+        data_json = json.loads(data_string)
+
+        print(data_json)
+
+        self.assertEqual(len(data_json), 1)
+
+        self.assertEqual(bind_klass_student_resp.status_code, 200)
+        self.assertEqual(data_json['klass_name'], klass_name,
+                         'Class name is wrong. '
+                         'Class name should is {}. '
+                         'Your class name {}.'.format(data_json['klass_name'],
+                                                      klass_name))

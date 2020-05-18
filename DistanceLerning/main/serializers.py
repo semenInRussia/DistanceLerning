@@ -27,9 +27,11 @@ class BindTeacherUserSerializer(serializers.ModelSerializer):
 
 
 class BindStudentClassSerializer(serializers.ModelSerializer):
+    klass_name = serializers.ReadOnlyField(source='klass.get_klass_name')
+
     class Meta:
         model = BindStudentClassModel
-        fields = ['user', 'klass', 'created']
+        fields = ['user', 'klass', 'klass_name', 'created']
 
 
 class AssessmentSerializer(serializers.ModelSerializer):
