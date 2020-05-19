@@ -270,13 +270,12 @@ class SchoolTestCase(TestCase):
 
         data_json = json.loads(data_string)
 
-        print(data_json)
-
         self.assertEqual(len(data_json), 1)
 
-        self.assertEqual(bind_klass_student_resp.status_code, 200)
-        self.assertEqual(data_json['klass_name'], klass_name,
+        self.assertEqual(bind_klass_student_resp.status_code, 200,
+                         'Status is wrong.')
+        self.assertEqual(data_json[0]['username'], self.teacher1.username,
                          'Class name is wrong. '
                          'Class name should is {}. '
-                         'Your class name {}.'.format(data_json['klass_name'],
+                         'Your class name {}.'.format(data_json[0]['username'],
                                                       klass_name))

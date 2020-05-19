@@ -1,3 +1,4 @@
+from django.contrib.auth import get_user_model
 from django.http import HttpRequest
 from django.shortcuts import get_object_or_404
 from rest_framework import status
@@ -6,7 +7,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .models import School, BindStudentClassModel
+from .models import School, BindStudentClassModel, BindSchoolTeacherModel
 # Create your views here.
 from .permissions import IsDirecter, IsOwnerSchool, UserIsInSchool
 from .serializers import SchoolListSerializer, SchoolCreateSerializer, BindTeacherUserSerializer, AssessmentSerializer, \
@@ -25,6 +26,7 @@ from auth_app.models import Diary
 
 from class_.models import ClassModel
 
+User = get_user_model()
 
 class SchoolApi(APIView):
     # permissions
@@ -90,13 +92,16 @@ class BindSchoolTeacher(CreateAPIView):
         return self.create(request, *args, **kwargs)
 
 
-class BindStudentClass(ListCreateAPIView):
+class BindStudentClass(CreateAPIView):
     permission_classes = [IsAuthenticated, IsActiveUser]
     serializer_class = BindStudentClassSerializer
 
     def get_klass(self):
-        char_class = self.request.data.get('char_class')
-        number_class = self.request.data.get('number_class')
+        request_data = self.request.data
+        if self.request.GET:
+            request_data = self.request.GET
+        char_class = request_data.get('char_class')
+        number_class = request_data.get('number_class')
 
         school = self.get_school()
         klass = get_object_or_404(ClassModel, char_class=char_class,
@@ -106,8 +111,13 @@ class BindStudentClass(ListCreateAPIView):
         return klass
 
     def get_school(self):
-        number = self.request.data.get('school_number')
-        pk = self.request.data.get('school')
+        request_data = self.request.data
+
+        if self.request.GET:
+            request_data = self.request.GET
+
+        number = request_data.get('school_number')
+        pk = request_data.get('school')
 
         if number:
             return get_object_or_404(School, number=number)
@@ -124,10 +134,15 @@ class BindStudentClass(ListCreateAPIView):
 
         return self.create(request, *args, **kwargs)
 
-    def get_queryset(self):
-        return BindStudentClassModel.objects.all().filter(
-            klass=self.get_klass(),
-        ).values('user')
+    def get(self, request: HttpRequest, *args, **kwargs):
+        user_ids = BindStudentClassModel.objects.all().filter(
+            klass=self.get_klass()
+        ).values_list('user_id', flat=True)
+
+        queryset = User.objects.all().filter(id__in=user_ids)
+        serializer = UserAllSerializer(queryset, many=True)
+
+        return Response(data=serializer.data)
 
 
 class ListTeacherInSchool(APIView):
@@ -139,13 +154,14 @@ class ListTeacherInSchool(APIView):
         return obj
 
     def get(self, request: HttpRequest, pk):
-        qs = BindSchoolTeacher.objects.all().filter(school=self.get_school(pk)) \
+        qs = BindSchoolTeacherModel.objects.all().filter(school=self.get_school(pk)) \
             .values('user')
         serializer = UserAllSerializer(qs, many=True)
         return Response(data=serializer.data, status=200)
 
 
 # [FAILING]
+# to do create Rate view
 class Rate(ListCreateAPIView):
     serializer_class = AssessmentSerializer
     permission_classes = [IsOwnerClass, IsActiveUser]
@@ -153,7 +169,6 @@ class Rate(ListCreateAPIView):
     def get_queryset(self):
         return Assessment.objects.all().filter(diary_student=self.request.user)
 
-    # todo get class
     def get_class(self):
         return None
 
